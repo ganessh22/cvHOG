@@ -32,4 +32,3 @@ class TestData:
 
     def load_data(self, json_file_path: str):
         pass
-
