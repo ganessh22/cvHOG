@@ -4,8 +4,8 @@ import os
 from utils import get_file_by_ext_from_dir
 
 
-class TestData:
-    def __init__(self, path: str):
+class Data:
+    def __init__(self, path: str, augment: bool = False):
         """
         Path should be of the format
         - path
@@ -16,6 +16,7 @@ class TestData:
             ....
         """
         self.path = path
+        self.augment = augment
         self.setup()
 
     def setup(self):
@@ -31,4 +32,15 @@ class TestData:
             self.info.append(self.load_data(json_path))
 
     def load_data(self, json_file_path: str):
+        pass
+
+    def _load_iter(self, idx: int) -> typing.Dict:
+        if self.augment:
+            pass
+            # TO-DO: train load
+        else:
+            pass
+            # TO-DO: test load
+
+    def __iter__(self):
         pass
