@@ -2,7 +2,7 @@ import glob
 import json
 import os
 
-from utils import get_file_by_ext_from_dir
+from utils import VideoReader, get_file_by_ext_from_dir
 
 
 class Data:
@@ -33,6 +33,7 @@ class Data:
             self.info.append(self.load_data(json_path))
             self.index_map = self._make_index_map()
         self.current = 0
+        self.current_video = VideoReader(self.video_paths[0], 0)
 
     def _make_index_map(self) -> typing.List[typing.Tuple[int, int]]:
         index_map = []
@@ -57,7 +58,19 @@ class Data:
             return json.load(f)
 
     def _load_pure_data(self, idx: int) -> typing.Dict:
-        pass
+        # TO-DO: i think the code is wrong, doesn't account for index inside each frame
+        iidx, jidx = self.index_map[idx]
+        if not iidx == self.current_video.index:
+            del self.current_video
+            self.current_video = VideoReader(self.video_paths[iidx], iidx)
+        frame = self.current_video.read_frame(self.info[iidx]["frames"][jidx])
+        all_crops = self.info[iidx]["crops"]
+        if len(all_crops) == 0:
+            crops = []
+        else:
+            crops = all_crops[jidx]
+        return {"frame": frame, "crops": crops, "gt": self.info[iidx]["gt"][jidx]}
+        
 
     def _augment_data(self, data: typing.Dict) -> typing.Dict:
         # TO-DO: update the typing.Dicts in this file to be proper
