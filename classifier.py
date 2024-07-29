@@ -26,7 +26,7 @@ class HOGClassifier:
     def load_svm_path(svm_path: str):
         # TO-DO: check exact format to save and reload
         # implement after writing the training part
-        pass
+        raise NotImplementedError("Yet to allow custom trained SVMs")
 
     def detect(
         self,

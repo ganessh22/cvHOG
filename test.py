@@ -18,7 +18,8 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def test(args: argparse.Namespace):
+if __name__ == "__main__":
+    args = parse_args()
     test_data = Data(args.test_dir, augment=False)
     clf = HOGClassifier(args.model)
     ys, y_preds = [], []
