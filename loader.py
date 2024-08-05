@@ -27,7 +27,7 @@ class Data:
             video_path = get_file_by_ext_from_dir(video_dir, "mp4")
             json_path = get_file_by_ext_from_dir(video_dir, "json")
             if video_path is None or json_path is None:
-                print(f"Skipping {video_dir}...")
+                print("Skipping ", video_dir, "...")
                 continue
             self.video_paths.append(video_path)
             self.info.append(self.load_data(json_path))
@@ -47,7 +47,7 @@ class Data:
         return index_map
 
     def load_data(self, json_file_path: str):
-        """data format : 
+        """data format :
         frames : [1, 5, 10, ...],
         crops: [[], [(0.0, 0.0, 1.0, 0.9), ...], [], ...],
         gt: [[False], [True, True]] ... ],
@@ -69,8 +69,11 @@ class Data:
             crops = []
         else:
             crops = all_crops[jidx]
-        return {"frame": frame, "crops": crops, "gt": self.info[iidx]["gt"][jidx]}
-        
+        return {
+            "frame": frame,
+            "crops": crops,
+            "gt": self.info[iidx]["gt"][jidx],
+        }
 
     def _augment_data(self, data: typing.Dict) -> typing.Dict:
         # TO-DO: update the typing.Dicts in this file to be proper
