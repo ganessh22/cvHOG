@@ -24,3 +24,4 @@ coef_ is a readonly property derived from raw_coef_ that follows the internal me
 intercept_ndarray of shape (1,) if n_classes == 2 else (n_classes,)
 Constants in decision function.
 ```
+Current status is I can convert an cv2 SVM to sklearn but not the other way. Probably I will need to modify the XML file. Not sure if I want to do that as finally I just need the vector which I can get from sklearn and cv2 too. 
