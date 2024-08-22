@@ -5,32 +5,33 @@ import cv2
 import numpy as np
 from skimage.feature import hog
 
-# Load and preprocess the image
-image = io.imread('path_to_your_image.jpg')  # Replace with your image path
-gray_image = color.rgb2gray(image)  # Convert to grayscale
 
-# Compute HOG features
-hog_features, hog_image = hog(gray_image, 
-                               orientations=9, 
-                               pixels_per_cell=(8, 8), 
-                               cells_per_block=(2, 2), 
-                               visualize=True, 
-                               feature_vector=True)
+def get_features_skimage(img: np.ndarray) -> npdarray:
+    im = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    hog_features, _ = hog(
+        im,
+        orientations=9,
+        pixels_per_cell=(8, 8),
+        cells_per_block=(2, 2),
+        visualize=True,
+        feature_vector=True,
+    )
+    return hog_features
 
-def get_features_skimage()
 
 def get_features(img: np.ndarray) -> np.ndarray:
     # Initialize HOG descriptor with parameters
+    im = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     hog = cv2.HOGDescriptor(
         _winSize=(128, 64),  # Size of the detection window
         _blockSize=(16, 16),  # Block size (2 cells of 8x8)
         _blockStride=(8, 8),  # Block stride (overlap of 8 pixels)
         _cellSize=(8, 8),  # Cell size (8x8 pixels)
-        _nbins=9  # Number of orientation bins
+        _nbins=9,  # Number of orientation bins
     )
-    
+
     # Compute HOG features
-    hog_features = hog.compute(img)
+    hog_features = hog.compute(im)
 
     return hog_features.flatten()
 
