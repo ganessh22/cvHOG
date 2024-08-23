@@ -3,6 +3,8 @@ import typing
 
 import cv2
 import numpy as np
+from scipy import ndimage
+from skimage.exposure import adjust_gamma
 from skimage.feature import hog
 
 
@@ -36,8 +38,36 @@ def get_features(img: np.ndarray) -> np.ndarray:
     return hog_features.flatten()
 
 
+def blur3(img: np.ndarray) -> np.ndarray:
+    return ndimage.uniform_filter(img, size=(3, 3, 1))
+
+
+def blur4(img: np.ndarray) -> np.ndarray:
+    return ndimage.uniform_filter(img, size=(4, 4, 1))
+
+
+def hflip(img: np.ndarray) -> np.ndarray:
+    return img[:, ::-1]
+
+
+def gamma(img: np.ndarray) -> np.ndarray:
+    return adjust_gamma(img, gamma=0.5)
+
+
+def noise(img: np.ndarray) -> np.ndarray:
+    return random_noise(img, mean=0.005)
+
+
 def augment_image(img: np.ndarray, augment_type: str) -> np.ndarray:
-    pass
+    augs = {
+        "blur3": blur3,
+        "blur4": blur4,
+        "hflip": hflip,
+        "gamma": gamma,
+        "noise": noise,
+    }
+    assert augment_type in augs
+    return augs[augment_type](img)
 
 
 def load_and_resize_images(
