@@ -71,7 +71,7 @@ def augment_image(img: np.ndarray, augment_type: str) -> np.ndarray:
 
 
 def load_and_resize_images(
-    input_folder: str, width: int = 64, height: int = 128
+    input_folder: str, width: int = 64, height: int = 128, augment: bool = False, feature_fn: typing.Optional[typing.Callable] = None,
 ) -> typing.List[np.ndarray]:
     images = []
     # Iterate over all files in the input folder
@@ -86,8 +86,22 @@ def load_and_resize_images(
 
             if image is not None:
                 # Resize the image
-                resized_image = cv2.resize(image, (width, height))
-                images.append(resized_image)
+                if augment:
+                    for aug in ["blur3", "blur4", "hflip", "gamma", "noise"]:
+                        aug_image = augment_image(image, aug)
+                        resized_image = cv2.resize(aug_image, (width, height))
+                        if feature_fn is not None:
+                            feat = feature_fn(resized_image)
+                        else:
+                            feat = resized_image
+                        images.append(feat)
+                else:
+                    resized_image = cv2.resize(image, (width, height))
+                    if feature_fn is not None:
+                        feat = feature_fn(resized_image)
+                    else:
+                        feat = resized_image
+                    images.append(feat)
             else:
                 print(f"Warning: Could not load image {filename}")
     return images
