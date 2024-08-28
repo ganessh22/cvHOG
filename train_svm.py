@@ -71,7 +71,11 @@ def augment_image(img: np.ndarray, augment_type: str) -> np.ndarray:
 
 
 def load_and_resize_images(
-    input_folder: str, width: int = 64, height: int = 128, augment: bool = False, feature_fn: typing.Optional[typing.Callable] = None,
+    input_folder: str,
+    width: int = 64,
+    height: int = 128,
+    augment: bool = False,
+    feature_fn: typing.Optional[typing.Callable] = None,
 ) -> typing.List[np.ndarray]:
     images = []
     # Iterate over all files in the input folder
@@ -105,3 +109,29 @@ def load_and_resize_images(
             else:
                 print(f"Warning: Could not load image {filename}")
     return images
+
+
+def load_data(folder: str) -> typing.Tuple[np.ndarray, np.ndarray]:
+    X_1 = load_and_resize_images(
+        os.path.join(folder, "positive"), feature_fn=get_features
+    )
+    X_0 = load_and_resize_images(
+        os.path.join(folder, "negative"), feature_fn=get_features
+    )
+    y_1 = np.ones((X_1.shape[0],), dtype=np.float32)
+    y_0 = np.zeros((X_0.shape[0],), dtype=np.float32)
+    return np.concatenate([X_0, X_1], axis=0), np.concatenate(
+        [y_0, y_1], axis=0
+    )
+
+
+def get_train_val_data(
+    train_folder: str, val_folder: str
+) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    train_X, train_y = load_data(train_folder)
+    val_X, val_y = load_data(val_folder)
+    return train_X, train_y, val_X, val_y
+
+
+def train(train_folder: str, val_folder: str, save_path: str = "model.pkl"):
+    pass
