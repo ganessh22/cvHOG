@@ -2,10 +2,19 @@ import os
 import typing
 
 import cv2
+import joblib
 import numpy as np
 from scipy import ndimage
 from skimage.exposure import adjust_gamma
 from skimage.feature import hog
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    f1_score,
+    precision_score,
+    recall_score,
+)
+from sklearn.svm import LinearSVC
 
 
 def get_features_skimage(img: np.ndarray) -> npdarray:
@@ -111,12 +120,18 @@ def load_and_resize_images(
     return images
 
 
-def load_data(folder: str) -> typing.Tuple[np.ndarray, np.ndarray]:
+def load_data(
+    folder: str, augment: bool = False
+) -> typing.Tuple[np.ndarray, np.ndarray]:
     X_1 = load_and_resize_images(
-        os.path.join(folder, "positive"), feature_fn=get_features
+        os.path.join(folder, "positive"),
+        feature_fn=get_features,
+        augment=augment,
     )
     X_0 = load_and_resize_images(
-        os.path.join(folder, "negative"), feature_fn=get_features
+        os.path.join(folder, "negative"),
+        feature_fn=get_features,
+        augment=augment,
     )
     y_1 = np.ones((X_1.shape[0],), dtype=np.float32)
     y_0 = np.zeros((X_0.shape[0],), dtype=np.float32)
@@ -128,10 +143,28 @@ def load_data(folder: str) -> typing.Tuple[np.ndarray, np.ndarray]:
 def get_train_val_data(
     train_folder: str, val_folder: str
 ) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    train_X, train_y = load_data(train_folder)
-    val_X, val_y = load_data(val_folder)
+    train_X, train_y = load_data(train_folder, True)
+    val_X, val_y = load_data(val_folder, False)
     return train_X, train_y, val_X, val_y
 
 
 def train(train_folder: str, val_folder: str, save_path: str = "model.pkl"):
-    pass
+    X, y, Xt, yt = get_train_val_data(train_folder, val_folder)
+    model = LinearSVC(class_weight={0: 1.0, 1: 1000.0}, C=0.001)
+    model.fit(X, y)
+    yp = model.predict(Xt)
+    for n, d in zip(["train", "test"], [(X, y), (Xt, yt)]):
+        yp = model.predict(d[0])
+        print(n + "\n" + "=" * 5)
+        for name, fn in zip(
+            ["accuracy", "f1", "precision", "recall", "confusion_matrix"],
+            [
+                accuracy_score,
+                f1_score,
+                precision_score,
+                recall_score,
+                confusion_matrix,
+            ],
+        ):
+            print(f"{name} : {fn(d[1], yp)}")
+    joblib.dump(model, save_path)
