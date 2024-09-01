@@ -37,7 +37,7 @@ def get_features(img: np.ndarray) -> np.ndarray:
 
 
 def test_matching_sklearn_cv2():
-    im = np.random.randint(0, 255, (64, 128, 3), dtype=np.uint8)
+    im = cv2.resize(cv2.imread("/Users/apple/demo.jpg"), (128, 64))
     cv = get_features(im)
     sk = get_features_skimage(im)
     import pdb; pdb.set_trace()

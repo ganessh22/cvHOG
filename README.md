@@ -31,3 +31,5 @@ Only 3 components are needed here :
 * take two folders of images and train and test an SVM with HOG
 * convert SVM to cv2 format i.e. array
 * infer on an image function
+
+Something wrong with sklearn hog features, doesn't match sklearn even when params are all same. But could be wrong order. Need to do a pairwise subtraction and plot the matrix.
