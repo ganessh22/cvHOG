@@ -32,4 +32,4 @@ Only 3 components are needed here :
 * convert SVM to cv2 format i.e. array
 * infer on an image function
 
-Something wrong with sklearn hog features, doesn't match sklearn even when params are all same. But could be wrong order. Need to do a pairwise subtraction and plot the matrix.
+I need to train with cv2 features only. Skip the sklearn stuff entirely. Just make sure to compare with sklearn if any drop in performance. 
