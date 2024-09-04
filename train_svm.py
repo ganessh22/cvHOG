@@ -6,7 +6,6 @@ import joblib
 import numpy as np
 from scipy import ndimage
 from skimage.exposure import adjust_gamma
-from skimage.feature import hog
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
@@ -15,19 +14,6 @@ from sklearn.metrics import (
     recall_score,
 )
 from sklearn.svm import LinearSVC
-
-
-def get_features_skimage(img: np.ndarray) -> npdarray:
-    im = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    hog_features, _ = hog(
-        im,
-        orientations=9,
-        pixels_per_cell=(8, 8),
-        cells_per_block=(2, 2),
-        visualize=True,
-        feature_vector=True,
-    )
-    return hog_features
 
 
 def get_features(img: np.ndarray) -> np.ndarray:
@@ -40,10 +26,8 @@ def get_features(img: np.ndarray) -> np.ndarray:
         _cellSize=(8, 8),  # Cell size (8x8 pixels)
         _nbins=9,  # Number of orientation bins
     )
-
     # Compute HOG features
     hog_features = hog.compute(im)
-
     return hog_features.flatten()
 
 
