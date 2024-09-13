@@ -29,6 +29,7 @@ Current status is I can convert an cv2 SVM to sklearn but not the other way. Pro
 I think this repo is getting too big. I need to simplify. 
 Only 3 components are needed here : 
 * take two folders of images and train and test an SVM with HOG
+* need to check if the sklearn features and cv2 features give an SVM with same accuracy 
 * convert SVM to cv2 format i.e. array
 * infer on an image function
 
